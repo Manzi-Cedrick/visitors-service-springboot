@@ -1,5 +1,4 @@
 package com.example.demo.v1.configs;
-
 import com.example.demo.v1.audits.ApplicationAuditAware;
 import com.example.demo.v1.repositories.IUserRepository;
 import lombok.RequiredArgsConstructor;
