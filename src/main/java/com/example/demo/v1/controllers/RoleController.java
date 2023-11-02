@@ -24,15 +24,13 @@ import java.util.UUID;
 public class RoleController {
     @Autowired
     private final IRoleService roleService;
-    public final String ENTITY = "Role";
-
     @PostMapping
     public ApiResponse<Role> save(
             @Valid @RequestBody RoleDTO roleDTO
     ){
         Role savedRole = roleService.save(roleDTO);
         if (savedRole != null){
-            return new ApiResponse<Role>(savedRole,"Successfully Registered",HttpStatus.CREATED,true);
+            return new ApiResponse<>(savedRole,"Successfully Registered",HttpStatus.CREATED,true);
         }
         return new ApiResponse<>("Failed to save role", (Object) null, HttpStatus.BAD_REQUEST);
     }
@@ -40,7 +38,7 @@ public class RoleController {
     public ApiResponse<List<Role>> getAll() {
         List<Role> roles = roleService.getAll();
         if (roles != null){
-            return new ApiResponse<List<Role>>(roles,"Successful Retrieval",HttpStatus.OK,true);
+            return new ApiResponse<>(roles,"Successful Retrieval",HttpStatus.OK,true);
         }
         return new ApiResponse<>("Failure to retrieve",(Object) null,HttpStatus.BAD_REQUEST);
     }
@@ -48,7 +46,7 @@ public class RoleController {
     public ApiResponse<Optional<Role>> getById(@PathVariable(value = "id") UUID id){
         Optional<Role> role = roleService.getById(id);
         if (role.isPresent()) {
-            return new ApiResponse<Optional<Role>>(role,"Successful Role retrieved !",HttpStatus.OK,true);
+            return new ApiResponse<>(role,"Successful Role retrieved !",HttpStatus.OK,true);
         }
         return new ApiResponse<>("Failure to retrieve single role",(Object) null,HttpStatus.BAD_REQUEST);
     }
