@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -18,6 +19,7 @@ import static com.example.demo.v1.enumerations.EUserRole.USER;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableMethodSecurity
 public class SecurityConfiguration {
     private static final String[] WHITE_LIST_URL = {
             "/v2/api-docs",
@@ -40,13 +42,13 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(req ->
-                        req.requestMatchers(WHITE_LIST_URL)
-                                .permitAll()
-                                .requestMatchers("/api/v1/generate-roles/**").hasAnyRole(ADMIN.name(), USER.name())
-                                .requestMatchers("/api/v1/auth/**").hasAnyRole(ADMIN.name(), USER.name())
-                                .anyRequest()
-                                .authenticated()
+                .authorizeHttpRequests(req -> {
+                            req.requestMatchers(WHITE_LIST_URL).permitAll()
+                                    .requestMatchers("/api/v1/generate-roles/**").hasAnyRole(ADMIN.name(), USER.name())
+                                    .requestMatchers("/api/v1/auth/**").hasAnyRole(ADMIN.name(), USER.name())
+                                    .anyRequest()
+                                    .authenticated();
+                        }
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
