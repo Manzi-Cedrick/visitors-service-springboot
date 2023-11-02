@@ -1,6 +1,7 @@
 package com.example.demo.v1.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
+import java.security.KeyPair;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +21,10 @@ public class JwtService {
     private String SECRET_KEY;
     @Value("${jwt.expiresIn}")
     private String jwtExpirationInMs;
-
+    private KeyPair keyPair;
+    public JwtService() {
+        this.keyPair = Keys.keyPairFor(SignatureAlgorithm.ES256);
+    }
     public String extractUsername(String token) {
         return extractClaim(token,Claims::getSubject);
     }
@@ -30,7 +35,7 @@ public class JwtService {
     private Claims extractAllClaims(String token){
         return (Claims) Jwts
                 .parser()
-//                .setSigningKey(getSignInKey())
+                .setSigningKey(keyPair.getPublic())
                 .parseClaimsJws(token)
                 .getBody();
     }
@@ -40,8 +45,8 @@ public class JwtService {
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+ 1000 *60*24))
-//                .signWith(SignatureAlgorithm.HS256, getSignInKey())
+                .setExpiration(new Date(System.currentTimeMillis()+ Long.parseLong(jwtExpirationInMs)))
+                .signWith(keyPair.getPrivate())
                 .compact();
     }
     public String generateToken(UserDetails userDetails){
