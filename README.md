@@ -1,1 +1,1 @@
-# redesigned-visitors-secure-application
+# visitors-secure-application
