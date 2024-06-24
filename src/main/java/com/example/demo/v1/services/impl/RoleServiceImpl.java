@@ -33,7 +33,7 @@ public class RoleServiceImpl implements IRoleService {
         Optional<Role> findRole = roleRepository.findById(id);
         if (findRole.isPresent()){
             Role existingRole = findRole.get();
-            EUserRole newRoleName = EUserRole.valueOf(roleDTO.getRoleName());
+            EUserRole newRoleName = roleDTO.getRoleName();
             existingRole.setRoleName(newRoleName);
             return roleRepository.save(existingRole);
         } else {

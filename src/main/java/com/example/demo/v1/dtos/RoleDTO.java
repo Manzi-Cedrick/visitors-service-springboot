@@ -1,4 +1,5 @@
 package com.example.demo.v1.dtos;
+import com.example.demo.v1.enumerations.EUserRole;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,5 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class RoleDTO {
     @NotBlank(message = "Role Required ! Name!")
-    private String roleName;
+    private EUserRole roleName;
 }
