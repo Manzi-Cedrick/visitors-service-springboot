@@ -1,6 +1,7 @@
 package com.example.demo.v1.configs;
 
 import com.example.demo.v1.security.JWTAuthenticationFilter;
+import com.example.demo.v1.security.UnauthorizedAccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,6 +38,7 @@ public class SecurityConfiguration {
     };
     private final JWTAuthenticationFilter jwtAuthenticationFilter;
     private final AuthenticationProvider authenticationProvider;
+    private final UnauthorizedAccessHandler unauthorizedAccessHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -50,6 +52,7 @@ public class SecurityConfiguration {
                                     .authenticated();
                         }
                 )
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedAccessHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
